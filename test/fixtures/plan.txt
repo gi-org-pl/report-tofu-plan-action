@@ -1,0 +1,48 @@
+
+OpenTofu used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place (current -> planned)
+  - destroy
+-/+ destroy and then create replacement
+
+OpenTofu will perform the following actions:
+
+  # terraform_data.instance will be destroyed
+  # (because terraform_data.instance is not in configuration)
+  - resource "terraform_data" "instance" {
+      - id     = "733813dd-183e-5aec-3ef1-53698738ffd3" -> null
+      - input  = "ec2" -> null
+      - output = "ec2" -> null
+    }
+
+  # terraform_data.queue will be created
+  + resource "terraform_data" "queue" {
+      + id     = (known after apply)
+      + input  = "sqs"
+      + output = (known after apply)
+    }
+
+  # terraform_data.task will be updated in-place
+  ~ resource "terraform_data" "task" {
+        id     = "49cf0fc1-8b95-0c4f-6949-141cb7d9ceb7"
+      ~ input  = "4.1.0" -> "4.1.2"
+      ~ output = "4.1.0" -> (known after apply)
+    }
+
+  # terraform_data.tunnel must be replaced
+-/+ resource "terraform_data" "tunnel" {
+      ~ id               = "0fdb670e-5130-dd28-a068-2a11e8a5ab19" -> (known after apply)
+      ~ output           = "cloudflared" -> (known after apply)
+      ~ triggers_replace = [
+          - "4.1.0",
+          + "4.1.2",
+        ]
+        # (1 unchanged attribute hidden)
+    }
+
+Plan: 2 to add, 1 to change, 2 to destroy.
+
+Changes to Outputs:
+  ~ image_tag = "4.1.0" -> "4.1.2"
+  ~ token     = (sensitive value)

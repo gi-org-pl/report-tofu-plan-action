@@ -1,0 +1,37 @@
+name: Report OpenTofu plan
+description: Shows a saved OpenTofu plan in the job summary and, on pull requests, in a comment updated on every run
+author: gi-org-pl
+
+inputs:
+  plan-file:
+    description: Saved plan file created with `tofu plan -out`, relative to working-directory
+    required: false
+    default: tfplan
+  working-directory:
+    description: Directory where OpenTofu was initialized
+    required: false
+    default: .
+  comment:
+    description: Whether to comment the plan on pull requests
+    required: false
+    default: 'true'
+  github-token:
+    description: Token that posts the comment, with `pull-requests: write` permission
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: composite
+  steps:
+    - name: Report OpenTofu plan
+      uses: actions/github-script@v9
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        PLAN_FILE: ${{ inputs.plan-file }}
+        WORKING_DIRECTORY: ${{ inputs.working-directory }}
+        COMMENT: ${{ inputs.comment }}
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const reportPlan = require(`${process.env.ACTION_PATH}/report-plan.js`);
+          await reportPlan({ github, context, core });

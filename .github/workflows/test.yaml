@@ -1,0 +1,42 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  unit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Run unit tests
+        run: node --test
+  action:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Set up OpenTofu
+        uses: opentofu/setup-opentofu@v2
+        with:
+          tofu_version: 1.13.1
+          tofu_wrapper: false
+      - name: Plan the example configuration
+        run: |
+          tofu -chdir=test/e2e init -input=false
+          tofu -chdir=test/e2e plan -input=false -out=tfplan
+      - name: Report the plan
+        uses: ./
+        with:
+          working-directory: test/e2e

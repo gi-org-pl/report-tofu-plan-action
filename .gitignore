@@ -1,0 +1,3 @@
+/.idea/
+/test/e2e/.terraform/
+/test/e2e/tfplan
