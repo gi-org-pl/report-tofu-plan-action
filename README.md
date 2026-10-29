@@ -1,3 +1,5 @@
+![report-tofu-plan-action header](https://raw.githubusercontent.com/gi-org-pl/report-tofu-plan-action/main/.github/image/header.png)
+
 # report-tofu-plan-action
 
 A GitHub Action that shows a saved OpenTofu plan in the job summary and, on pull requests, in a comment that is updated on every run instead of adding a new one.
